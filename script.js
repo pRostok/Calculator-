@@ -35,14 +35,14 @@ function clear() {
 numbers.forEach(number => {
     number.addEventListener("click", () => {
         getNumber(number.textContent)
-        
+
         console.log(number)
         display()
     })
 })
 
 function getNumber(number) {
-   
+    if (number === "." && currentOp.toString().includes(".")) return
     currentOp += number.toString()
 }
 
@@ -65,5 +65,62 @@ clearAllBtn.addEventListener("click", () => {
 
 deleteBtn.addEventListener("click", () => {
     currentOp = currentOp.toString().slice(0, currentOp.toString().length - 1)
+    display()
+})
+
+
+function chooseOperator(operator) {
+    if (currentOp === "") return
+    if (prevOp !== "") operate()
+    operation = operator.textContent
+    prevOp = currentOp
+    currentOp = ""
+}
+
+function operate() {
+    let result = 0
+
+    if (isNaN(prevOp) || isNaN(currentOp)) return;
+    switch (operation) {
+        case "+":
+            result = parseFloat(prevOp) + parseFloat(currentOp)
+            break
+        case "-":
+            result = parseFloat(prevOp) - parseFloat(currentOp)
+            break
+        case "*":
+            result = parseFloat(prevOp) * parseFloat(currentOp)
+            break
+        case "/":
+            if (parseFloat(currentOp) == 0) {
+                clear()
+                display()
+                return
+            }
+            result = parseFloat(prevOp) / parseFloat(currentOp)
+            break
+
+
+    }
+
+    currentOp = result
+    operation = undefined
+    prevOp = ""
+}
+
+
+
+
+operators.forEach(operator => {
+    operator.addEventListener("click", () => {
+        console.log(operator)
+
+        chooseOperator(operator)
+        display()
+    })
+})
+
+equalBtn.addEventListener("click", () => {
+    operate()
     display()
 })
