@@ -1,4 +1,3 @@
-
 const previousTextElement = document.querySelector(".out1")
 const currentTextElement = document.querySelector(".out2")
 const numbers = document.querySelectorAll("[data-number]")
@@ -8,44 +7,37 @@ const deleteBtn = document.querySelector("[data-delete]")
 const equalBtn = document.querySelector("[data-equals]")
 const toggle = document.querySelector('.switch')
 
-
-toggle.addEventListener('click', (e) => {
-    const html = document.querySelector('html')
-    if (html.classList.contains('dark')) {
-        html.classList.remove('dark')
-        e.target.innerHTML = 'Dark mode'
-    } else {
-        html.classList.add('dark')
-        e.target.innerHTML = 'Light mode'
-    }
-})
+let currentOp = '0'
+let operation = undefined
+let prevOp = ''
+let result 
 
 
-
-
-clear()
 
 function clear() {
     prevOp = ''
-    currentOp = ''
-    operation = undefined
-    currentTextElement.innerHTML = 0
+    currentOp = '0'
+    operation = undefined   
 }
 
 numbers.forEach(number => {
     number.addEventListener("click", () => {
         getNumber(number.textContent)
-
-        console.log(number)
         display()
     })
 })
 
-function getNumber(number) {
-    if (number === "." && currentOp.toString().includes(".")) return
-    currentOp += number.toString()
+function getNumber(number) {    
+    if (number === "." && currentOp.toString().includes(".")) { return }
+    if (number === "0" && currentOp[0] == '0' && !currentOp.toString().includes('.')) {
+        return
+    } 
+    if (number !== "0" && currentOp[0] == '0' && number !== '.' && !currentOp.toString().includes(".")) {
+        currentOp = ''
+        currentOp[0] = number.toString()
+    }     
+    currentOp += number.toString()    
 }
-
 
 function display() {
     if (operation) {
@@ -62,7 +54,6 @@ clearAllBtn.addEventListener("click", () => {
     display()
 })
 
-
 deleteBtn.addEventListener("click", () => {
     currentOp = currentOp.toString().slice(0, currentOp.toString().length - 1)
     display()
@@ -78,7 +69,7 @@ function chooseOperator(operator) {
 }
 
 function operate() {
-    let result = 0
+    
 
     if (isNaN(prevOp) || isNaN(currentOp)) return;
     switch (operation) {
@@ -93,6 +84,7 @@ function operate() {
             break
         case "/":
             if (parseFloat(currentOp) == 0) {
+                alert("can not divide by zero")
                 clear()
                 display()
                 return
@@ -108,13 +100,8 @@ function operate() {
     prevOp = ""
 }
 
-
-
-
 operators.forEach(operator => {
     operator.addEventListener("click", () => {
-        console.log(operator)
-
         chooseOperator(operator)
         display()
     })
@@ -123,4 +110,31 @@ operators.forEach(operator => {
 equalBtn.addEventListener("click", () => {
     operate()
     display()
+    console.log('result', result)
+    console.log('currentOp', currentOp)
+    console.log('prevOp', prevOp)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+toggle.addEventListener('click', (e) => {
+    const html = document.querySelector('html')
+    if (html.classList.contains('dark')) {
+        html.classList.remove('dark')
+        e.target.innerHTML = 'Dark mode'
+    } else {
+        html.classList.add('dark')
+        e.target.innerHTML = 'Light mode'
+    }
 })
